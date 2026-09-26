@@ -12,7 +12,7 @@ steps:
   - id: account
     human_does: sign up at https://github.com/signup if no account; enable 2FA (Settings > Password and authentication); store recovery codes off the phone
   - id: auth
-    human_does: "gh auth login  (GitHub.com > HTTPS > browser). In Claude Code type: ! gh auth login"
+    human_does: "in a SECOND terminal window (interactive; may hang inside the agent): gh auth login --web --git-protocol https; copy the code, press Enter, paste the code in the browser, confirm; then tell the agent done"
     check: "gh auth status"
   - id: identity
     if_empty: "git config --global user.name"  # ask the name, set it
@@ -33,7 +33,7 @@ steps:
     commit_to_main: "bash scripts/check.sh; git add -A; git commit -m 'Настройка репозитория команды'; git push"   # the only direct commit to main
   - id: invite
     run_per_login: "gh api -X PUT repos/<owner>/<name>/collaborators/<login> -f permission=push"
-    tell_human: members get an email and https://github.com/notifications invite; they join via setup_join
+    tell_human: members get an email and https://github.com/notifications invite; send each of them JOIN_ru.md (link https://github.com/viberesearch/triad-workspace-template/blob/main/JOIN_ru.md) with the team repo address
   - id: hub
     if: hub address known
     cwd: <workspace>
