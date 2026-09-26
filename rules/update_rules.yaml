@@ -1,13 +1,13 @@
 id: update_rules
 trigger: update rules from the template
-managed_by_template: ["rules/*.yaml", rules/VERSION, rules/CHANGELOG.md, AGENTS.md, PROTOCOL.md, HOW_IT_WORKS.md, JOIN_ru.md, scripts/, .github/]
-not_touched: rules/local/
+managed_by_template: ["rules/*.yaml", rules/VERSION, rules/CHANGELOG.md, AGENTS.md, PROTOCOL.md, HOW_IT_WORKS.md, JOIN_ru.md, README.md, scripts/, .github/]
+not_touched: rules/local/   # team-specific text belongs in team/README.md, journal.md, rules/local/ — README.md is overwritten on update
 organizer_rules: live in the hub; updated by "git -C <hub> pull"
 steps:
   - "git remote get-url template || git remote add template https://github.com/viberesearch/triad-workspace-template.git"
   - "git fetch template"
   - compare: "cat rules/VERSION; git show template/main:rules/VERSION"   # equal -> nothing to do
-  - show_human: "git show template/main:rules/CHANGELOG.md (new entries); git diff HEAD template/main --stat -- ':(glob)rules/*' AGENTS.md PROTOCOL.md HOW_IT_WORKS.md JOIN_ru.md scripts .github"
-  - with_consent: "git switch -c <login>/rules-<version>; git checkout template/main -- ':(glob)rules/*' AGENTS.md PROTOCOL.md HOW_IT_WORKS.md JOIN_ru.md scripts .github"
+  - show_human: "git show template/main:rules/CHANGELOG.md (new entries); git diff HEAD template/main --stat -- ':(glob)rules/*' AGENTS.md PROTOCOL.md HOW_IT_WORKS.md JOIN_ru.md README.md scripts .github"
+  - with_consent: "git switch -c <login>/rules-<version>; git checkout template/main -- ':(glob)rules/*' AGENTS.md PROTOCOL.md HOW_IT_WORKS.md JOIN_ru.md README.md scripts .github"
   - removed_upstream: "git ls-tree --name-only template/main rules/ vs ls rules/; git rm extras with consent"
   - "bash scripts/check.sh; commit; PR (daily.yaml)"
