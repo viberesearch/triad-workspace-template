@@ -1,0 +1,22 @@
+id: daily
+trigger: any work session; any change
+start:
+  - "git switch main && git pull"
+  - "git -C <hub> pull; git -C <hub> log --oneline -10"   # tell the human what is new in the hub
+  - read top entries of journal.md; confirm the task
+  - "git switch -c <login>/<topic>"
+work:
+  - small commits, Russian messages, last line "Assisted-by: <model>"
+  - documents -> documents.yaml; transcripts/materials -> sources.yaml
+  - '"bash scripts/check.sh" before each commit'
+submit:
+  - "git push -u origin <branch>"
+  - "gh pr create --fill"   # then add: what and why; for construction/: version old -> new
+  - show human: '"gh pr diff --name-only" + deleted/renamed files'
+  - tell human whom to ask for review
+  - after approval: "gh pr merge --merge --delete-branch; git switch main && git pull"
+approval_exception: only if rules/local/team.yaml allows unreviewed small changes
+end:
+  - '"git status" clean'
+  - unfinished -> commit to branch with "черновик" in message, push
+  - propose one journal.md line if a decision was made

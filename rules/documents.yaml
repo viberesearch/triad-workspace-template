@@ -1,0 +1,31 @@
+id: documents
+trigger: edit construction/, journal.md, modules/, any living document
+ownership:
+  source: INDEX.md owner column
+  rule: owner edits; others propose via PR and mention owner
+  no_owner: ask the human who owns it; record in INDEX.md
+frontmatter_living_doc: |
+  ---
+  version: 0.1
+  status: draft        # draft | active | superseded
+  owner: <login>
+  last_updated: YYYY-MM-DD
+  derived_from: [<atom ids#t=, sources/ paths, URLs>]   # team docs are derived from atoms: hub atoms + sources/
+  ---
+versioning:
+  minor_edit: bump minor (0.1 -> 0.2)
+  major_rebuild: copy old file to "archive/<name>__v<old>__<YYYY-MM-DD>.md", bump version
+  same_pr: [INDEX.md row, CHANGELOG.md line "<path>: <old> -> <new> — <why>"]
+  archive_files: immutable
+construction:
+  elements: construction/README.md
+  facts: cite source; hub refs as "hub:<path>@<sha7>"
+  model_written_unreviewed: status draft
+journal.md:
+  mode: append-only, newest on top
+  entry: '"## YYYY-MM-DD — <short>" + 1-5 lines'
+  corrections: new entry referencing the old one
+modules:
+  folder: "modules/NN_<place>_<YYYY-MM>/"
+  files: {before: prep.md, daily: notes_YYYY-MM-DD.md, after: outcome.md}   # templates in modules/_template/
+  transcripts: live in the hub; link, do not copy

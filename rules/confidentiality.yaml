@@ -1,0 +1,19 @@
+id: confidentiality
+trigger: may this go into the repo?
+premise: every member and every member's model provider sees everything in the repo
+allowed:
+  - map, stake, hypotheses, validation, route
+  - module notes, conclusions, program expert contacts (working scope)
+  - hub links and quotes
+  - public materials and extracts with source
+  - drafts with status draft
+forbidden:
+  - keys, passwords, tokens — in any form, even briefly
+  - members' client data (names, contacts, deal terms)
+  - third-party personal data without consent
+  - closed methods/assets a member will not give to the team (listed in rules/local/team.yaml)
+  - audio/video files (cloud + link)
+doubt: do not commit; ask the human
+recordings:
+  off_record: participant says so aloud before speaking
+  leaked_into_hub_transcript: redaction_request in program_hub.yaml

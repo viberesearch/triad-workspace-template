@@ -1,0 +1,45 @@
+id: setup_create
+trigger: create the team repo from the template (acting for the future repo owner)
+template: viberesearch/triad-workspace-template
+mode: step by step; verify each step; tell the human what was done
+steps:
+  - id: tools
+    check: "git --version; gh --version"
+    install_if_missing:
+      macos: "brew install git gh   # no Homebrew -> installers from https://cli.github.com and https://git-scm.com"
+      windows: "winget install --id Git.Git -e; winget install --id GitHub.cli -e"
+      linux: distro package manager (git, gh)
+  - id: account
+    human_does: sign up at https://github.com/signup if no account; enable 2FA (Settings > Password and authentication); store recovery codes off the phone
+  - id: auth
+    human_does: "gh auth login  (GitHub.com > HTTPS > browser). In Claude Code type: ! gh auth login"
+    check: "gh auth status"
+  - id: identity
+    if_empty: "git config --global user.name"  # ask the name, set it
+    email: |
+      gh api user --jq '"\(.id)+\(.login)@users.noreply.github.com"'
+      git config --global user.email <result>   # keeps the personal address out of history
+  - id: decisions
+    ask_human: [repo name (lowercase-hyphen), members' GitHub logins, workspace dir (default ~/program-workspace), hub address owner/name if organizers gave one]
+  - id: create
+    cwd: <workspace>
+    run: "gh repo create <name> --private --template viberesearch/triad-workspace-template --clone"
+    on_clone_fail: "sleep 10; gh repo clone <owner>/<name>"   # template copy still in progress
+    then: "cd <name>; git remote add template https://github.com/viberesearch/triad-workspace-template.git"
+  - id: fill
+    files:
+      team/README.md: members, roles, repo owner, successor
+      rules/local/team.yaml: from rules/local/README.md example; hub address, team agreements
+    commit_to_main: "bash scripts/check.sh; git add -A; git commit -m 'Настройка репозитория команды'; git push"   # the only direct commit to main
+  - id: invite
+    run_per_login: "gh api -X PUT repos/<owner>/<name>/collaborators/<login> -f permission=push"
+    tell_human: members get an email and https://github.com/notifications invite; they join via setup_join
+  - id: hub
+    if: hub address known
+    cwd: <workspace>
+    run: "gh repo clone <hub>"   # next to the team repo, never inside it
+    on_no_access: human sends their GitHub login to the organizers
+  - id: verify
+    show_human: ["gh repo view --web", collaborators list, hub clone path, how to start: "Работай по AGENTS.md. Задача: …"]
+optional:
+  branch_protection: requires paid GitHub Pro for private repos; not needed — rules already route work via PR, mistakes revert via recover.yaml

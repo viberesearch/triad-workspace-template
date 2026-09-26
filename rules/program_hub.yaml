@@ -1,0 +1,25 @@
+id: program_hub
+trigger: anything from the program hub; submit materials; request removal of a recording fragment
+hub: organizers' repo; atoms first — atoms/ holds raw transcripts, materials, submissions (immutable after publish); derived/ holds summaries, plenary outcomes, catalogs built from atoms. Address and clone path in rules/local/team.yaml
+read:
+  clone_location: next to the team repo (e.g. ~/program-workspace/<hub>)
+  update: '"git -C <hub> pull" at session start'
+  write: never commit or push to the hub
+  cite: "<atom id>#t=HH:MM:SS (from atoms/*/manifest.yaml) or hub:<path>@<sha7>"   # sha7 = git -C <hub> rev-parse --short HEAD
+  prefer: atoms over derived; derived hub files are convenience views, verify key claims against the atom
+  quote: verbatim, with source ref and timestamp
+  copy: only if the team must annotate it -> sources/materials/hub/ (sources.yaml)
+organizer_rules:
+  file: <hub>/rules/for_teams.yaml
+  read: every session (may change anytime)
+  scope: program matters; overrides general rules there
+submit:
+  - prepare the text/file the team wants organizers or the class to see
+  - check against confidentiality.yaml; show the human the full content
+  - ask the human whether all team members agreed; no consent -> do not submit
+  - "gh issue create -R <hub> --template 'Материалы команды'"   # or the form in for_teams.yaml; paste content: team repo is private, links will not open
+redaction_request:
+  when: within the review window stated in <hub>/RECORDING_PROTOCOL.md
+  run: "gh issue create -R <hub> --template 'Убрать фрагмент записи'"
+  include: [file, timestamp, one-line reason]
+  exclude: the fragment itself

@@ -1,0 +1,17 @@
+id: recover
+trigger: something deleted, broken, lost; undo
+first: diagnose with "git status; git log --oneline -15; gh pr list --state all --limit 10"; explain findings to the human before acting
+cases:
+  file_broken_in_own_branch_pr_unmerged: "git checkout origin/main -- <path>; commit"
+  mistake_merged_to_main: "new branch; gh pr view <n> --json mergeCommit; git revert -m 1 <merge-sha>; PR   # or the Revert button on the merged PR"
+  need_old_version_of_one_file: "git log --oneline -- <path>; git checkout <sha> -- <path>; PR"
+  noticed_several_commits_later: "git revert <sha>... only the bad commits; PR; never reset"
+  lost_uncommitted_work: "git stash list; git reflog; git switch -c <login>/recovery <sha>"
+  branch_deleted: "Restore branch button on the PR page, or git push origin <branch> from a local clone"
+  main_history_rewritten: "push nothing; owner restores main from the most complete clone; only case for git push --force-with-lease, owner only"
+  repo_deleted: "owner: Settings > Repositories > Deleted repositories > Restore (90 days); later: new repo from any member's clone"
+  secret_committed: "rotate the key at its issuer FIRST; deletion does not help (history, clones, model providers already have it); then clean"
+  closed_material_committed: "tell the owner; treat as disclosed to all members and their providers; owner cleans history (git filter-repo); everyone re-clones; journal.md entry without repeating the content"
+  model_mass_rewrite: "do not merge; close the PR; redo as a smaller task"
+  concurrent_edit_conflict: "document owner resolves"
+  github_unavailable: "work locally on a branch; push later"

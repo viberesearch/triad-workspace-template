@@ -1,0 +1,15 @@
+id: review
+trigger: look at a teammate's PR
+steps:
+  - "gh pr list"   # human picks one
+  - "gh pr view <n>; gh pr diff <n>"
+  - report_to_human:
+      - what changed and why (2-4 lines)
+      - deleted/renamed files (separate list)
+      - transcript bodies touched? (must not be)
+      - claims without sources
+      - closed material (confidentiality.yaml)
+  - decision_by_human:
+      approve: "gh pr review <n> --approve"
+      request_changes: "gh pr review <n> --request-changes -b '<what exactly>'"
+merge: usually by the author after approval

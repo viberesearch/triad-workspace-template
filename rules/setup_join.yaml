@@ -1,0 +1,21 @@
+id: setup_join
+trigger: join an existing team repo
+steps:
+  - id: tools_account_auth_identity
+    do: steps tools, account, auth, identity of setup_create.yaml
+  - id: invitation
+    ask_human: team repo address owner/name
+    list: "gh api user/repository_invitations --jq '.[] | {id, repo: .repository.full_name}'"
+    accept: "gh api -X PATCH user/repository_invitations/<id>"
+    if_none: human sends their GitHub login to the repo owner
+  - id: clone
+    ask_human: workspace dir (default ~/program-workspace)
+    cwd: <workspace>
+    run: "gh repo clone <owner>/<name>; cd <name>; git remote add template https://github.com/viberesearch/triad-workspace-template.git"
+  - id: hub
+    source: rules/local/team.yaml hub
+    cwd: <workspace>
+    run: "gh repo clone <hub>"
+  - id: orient
+    summarize_for_human: [team/README.md, top entries of journal.md, INDEX.md]
+    if_human_missing_in_team_readme: propose adding via PR (daily.yaml)

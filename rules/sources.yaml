@@ -1,0 +1,26 @@
+id: sources
+trigger: add a transcript or material
+team_transcripts:
+  dir: sources/transcripts/
+  scope: team's own recordings (calls, interviews); program module transcripts stay in the hub (program_hub.yaml)
+  filename: "YYYY-MM-DD_<kind>_<word>.md"   # kind: call | interview | session
+  consent: ask the human whether all recorded people agree before adding
+  frontmatter: |
+    ---
+    title: "<topic>"
+    kind: call_transcript
+    recorded: YYYY-MM-DD
+    participants: [<names or roles>]
+    source: "<recording origin; where the audio lives>"
+    asr: "<engine>"
+    known_asr_errors: ["«as recognized» — correct"]
+    verbatim: true
+    ---
+  body: verbatim, never edited; ASR errors only in known_asr_errors
+  after_adding: "bash scripts/check.sh add-atom <path>"   # body checksum -> CHECKSUMS.sha256
+materials:
+  dir: sources/materials/
+  prefer: text extract with header (source, date, link)
+  binaries: only if necessary, < 50 MB
+  audio_video: never in git; store in cloud, commit a link
+  hub_copies: sources/materials/hub/ with header (hub path, commit, date)
