@@ -6,7 +6,7 @@ Create `team.yaml`:
 hub: <owner>/<name>              # organizers' hub; empty if none
 hub_clone: ~/program-workspace/<name>
 repo_documents_language: ru
-approval: always                 # always | small_changes_without_review (typos, journal.md)
+approval: always                 # always | small_changes_without_review (typos, journal.md) | none (author merges own PR)
 closed:                          # per member: what never goes into this repo
   <member>: [<item>, ...]
 agreements: []

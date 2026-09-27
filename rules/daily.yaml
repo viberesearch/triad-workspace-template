@@ -15,7 +15,11 @@ submit:
   - show human: '"gh pr diff --name-only" + deleted/renamed files'
   - tell human whom to ask for review
   - after approval: "gh pr merge --merge --delete-branch; git switch main && git pull"
-approval_exception: only if rules/local/team.yaml allows unreviewed small changes
+approval:
+  setting: rules/local/team.yaml approval
+  always: wait for another member's approval (default)
+  small_changes_without_review: typos and journal.md may be merged by the author
+  none: author merges own PR right after CI
 end:
   - '"git status" clean'
   - unfinished -> commit to branch with "черновик" in message, push

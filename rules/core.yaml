@@ -16,7 +16,7 @@ always:
   - start: '"git switch main && git pull"; if hub clone exists: "git -C <hub> pull"'
   - before every commit: '"bash scripts/check.sh"; on error do not commit, explain'
   - commit message last line: "Assisted-by: <model>"
-  - changes reach main only via PR approved by another member (see daily.yaml)
+  - changes reach main only via PR; approval per rules/local/team.yaml "approval" (default always = another member approves; none = author merges own PR)
   - before PR: list changed / added / deleted / renamed files to the human
   - every factual claim cites a source (sources/..., hub:<path>@<sha7>, URL); otherwise label "гипотеза"
 never:
