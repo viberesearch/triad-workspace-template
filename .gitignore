@@ -9,3 +9,9 @@
 *.mp4
 *.mov
 *.zip
+
+# Claude Code local files and machine-specific MCP config (.mcp.json.silicon or .mcp.json.intel templates)
+.claude/settings.local.json
+.claude/worktrees/
+.claude/*.local.*
+.mcp.json
